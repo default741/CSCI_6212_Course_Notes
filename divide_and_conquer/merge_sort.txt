@@ -1,0 +1,133 @@
+Merge sort is defined as a sorting algorithm that works by dividing an array into smaller subarrays,
+sorting each subarray, and then merging the sorted subarrays back together to form the final sorted array.
+
+Merge sort is a recursive algorithm that continuously splits the array in half until it cannot be further
+divided i.e., the array has only one element left (an array with one element is always sorted). Then the
+sorted subarrays are merged into one sorted array.
+
+Pseudo Algorithm for Merge Sort
+
+// Given a unsorted array A, it sorts the array
+MergeSort(array, left, right)
+    if left < right
+        middle = (left + right) / 2
+        MergeSort(array, left, middle)
+        MergeSort(array, middle + 1, right)
+        Merge(array, left, middle, right)
+
+Merge(array, left, middle, right)
+    n1 = middle - left + 1
+    n2 = right - middle
+    L[1..n1+1], R[1..n2+1]
+    for i = 1 to n1
+        L[i] = array[left + i - 1]
+    for j = 1 to n2
+        R[j] = array[middle + j]
+    L[n1+1] = ∞
+    R[n2+1] = ∞
+    i = 1
+    j = 1
+    for k = left to right
+        if L[i] ≤ R[j]
+            array[k] = L[i]
+            i++
+        else
+            array[k] = R[j]
+            j++
+
+Recurrance Relation:
+Since the Algorithm divides the array in 2 parts, (b = 2) and recursively calls both the parts (a = 2), and the merging runs in linear time,
+Recurrance Relation can be written as:
+    T(n) = 2T(n/2) + O(n), where c = O(n) is for merging the two arrays.
+
+Using the Master Theorem, we can solve the Recurrance Relation to get the time complexity as T(n) = O(n * log n)
+
+Time Complexity:
+    Best Case: O(N * log N)
+    Average Case: O(N * log N)
+    Worst Case: O(N * log N)
+
+Auxiliary Space: O(N).
+
+Python Code for Binary Search (Recursive Function):
+
+def merge_lists(input_list: list, left_idx: int, right_idx: int, middle_idx: int) -> None:
+    """Merges two lists based on their index into one sorted array.
+
+    Args:
+        input_list (list): Input List Unsorted
+        left_idx (int): Left Index
+        right_idx (int): Right Index
+        middle_idx (int): Middle Index
+    """
+
+    left_list_len = middle_idx - left_idx + 1
+    right_list_len = right_idx - middle_idx
+
+    left_array = [input_list[left_idx + i] for i in range(left_list_len)]
+    right_array = [input_list[middle_idx + 1 + j]
+                    for j in range(right_list_len)]
+
+    i = j = 0
+    k = left_idx
+
+    while i < left_list_len and j < right_list_len:
+        if left_array[i] <= right_array[j]:
+            input_list[k] = left_array[i]
+            i += 1
+
+        else:
+            input_list[k] = right_array[j]
+            j += 1
+
+        k += 1
+
+    while i < left_list_len:
+        input_list[k] = left_array[i]
+        i, k = i + 1, k + 1
+
+    while j < right_list_len:
+        input_list[k] = right_array[j]
+        j, k = j + 1, k + 1
+
+def merge_sort(input_list: list, left_idx: int, right_idx: int) -> None:
+    """Splits the Array into two and recursively calls Merge sort in both of them and then finally combining both the arrays.
+
+    Args:
+        input_list (list): Input List
+        left_idx (int): Left Index
+        right_idx (int): Right Index
+    """
+
+    if left_idx < right_idx:
+        middle_idx = left_idx + ((right_idx - left_idx) // 2)
+
+        Sorting_Algorithms.merge_sort(
+            input_list=input_list, left_idx=left_idx, right_idx=middle_idx)
+        Sorting_Algorithms.merge_sort(
+            input_list=input_list, left_idx=middle_idx + 1, right_idx=right_idx)
+
+        Sorting_Algorithms.merge_lists(
+            input_list=input_list, left_idx=left_idx, right_idx=right_idx, middle_idx=middle_idx)
+
+Applications of Merge Sort:
+1. Sorting large datasets: Merge sort is particularly well-suited for sorting large datasets due to its guaranteed worst-case
+    time complexity of O(n log n).
+2. External sorting: Merge sort is commonly used in external sorting, where the data to be sorted is too large to fit
+    into memory.
+3. Custom sorting: Merge sort can be adapted to handle different input distributions, such as partially sorted, nearly
+    sorted, or completely unsorted data.
+4. Inversion Count Problem - Inversion Count for an array indicates – how far (or close) the array is from being sorted.
+    If the array is already sorted, then the inversion count is 0, but if the array is sorted in reverse order, the inversion count is the maximum.
+
+Advantages of Merge Sort:
+1. Stability: Merge sort is a stable sorting algorithm, which means it maintains the relative order of equal elements in the input array.
+2. Guaranteed worst-case performance: Merge sort has a worst-case time complexity of O(N logN), which means it performs well even on large datasets.
+3. Parallelizable: Merge sort is a naturally parallelizable algorithm, which means it can be easily parallelized to take advantage of multiple processors or threads.
+
+Drawbacks of Merge Sort:
+1. Space complexity: Merge sort requires additional memory to store the merged sub-arrays during the sorting process.
+2. Not in-place: Merge sort is not an in-place sorting algorithm, which means it requires additional memory
+    to store the sorted data. This can be a disadvantage in applications where memory usage is a concern.
+3. Not always optimal for small datasets: For small datasets, Merge sort has a higher time complexity than some other
+    sorting algorithms, such as insertion sort. This can result in slower performance for very small datasets.

@@ -1,6 +1,11 @@
 Binary Search is defined as a searching algorithm used in a sorted array by repeatedly dividing the search interval in half.
 The idea of binary search is to use the information that the array is sorted and reduce the time complexity to O(log N).
 
+Binary search compares the target value to the middle element of the array. If they are not equal, the half in which the
+target cannot lie is eliminated and the search continues on the remaining half, again taking the middle element to compare to
+the target value, and repeating this until the target value is found. If the search ends with the remaining half being empty,
+the target is not in the array.
+
 To apply Binary Search algorithm:
 1. The data structure must be sorted.
 2. Access to any element of the data structure takes constant time.
@@ -13,7 +18,7 @@ BinarySearch (A, low, high, key) {
         // Key not present in the given array A
         return
     }
-    mid = high + low / 2
+    mid = low + ((high - low) / 2)
     if (key < A[mid]) {
         return BinarySearch(A, low, mid, key)
     } else {
@@ -105,6 +110,7 @@ Drawbacks of Binary Search:
 3. Binary search requires that the elements of the array be comparable, meaning that they must be able to be ordered.
 
 Applications of Binary Search:
-1. Binary search can be used as a building block for more complex algorithms used in machine learning, such as algorithms for training neural networks or finding the optimal hyperparameters for a model.
+1. Binary search can be used as a building block for more complex algorithms used in machine learning, such as algorithms for training
+    neural networks or finding the optimal hyperparameters for a model.
 2. It can be used for searching in computer graphics such as algorithms for ray tracing or texture mapping.
 3. It can be used for searching a database.
