@@ -80,6 +80,13 @@ class Sorting_Algorithms:
 
     @staticmethod
     def merge_sort(input_list: list, left_idx: int, right_idx: int) -> list:
+        """Splits the Array into two and recursively calls Merge sort in both of them and then finally combining both the arrays.
+
+        Args:
+            input_list (list): Input List
+            left_idx (int): Left Index
+            right_idx (int): Right Index
+        """
 
         if left_idx < right_idx:
             middle_idx = left_idx + ((right_idx - left_idx) // 2)
@@ -93,8 +100,50 @@ class Sorting_Algorithms:
                 input_list=input_list, left_idx=left_idx, right_idx=right_idx, middle_idx=middle_idx)
 
     @staticmethod
-    def quick_sort() -> None:
-        pass
+    def get_partition_index(input_list: list, low_idx: int, high_idx: int) -> int:
+        """Gets the partition of the given list taking the last element as the pivot.
+
+        Args:
+            input_list (list): Input List
+            low_idx (int): Lower Index
+            high_idx (int): Higher Index
+
+        Returns:
+            int: Partition Index
+        """
+
+        pivot_element = input_list[high_idx]
+
+        i = low_idx - 1
+
+        for j in range(low_idx, high_idx):
+            if input_list[j] <= pivot_element:
+                i = i + 1
+                (input_list[i], input_list[j]) = (input_list[j], input_list[i])
+
+        (input_list[i + 1], input_list[high_idx]
+         ) = (input_list[high_idx], input_list[i + 1])
+
+        return i + 1
+
+    @staticmethod
+    def quick_sort(input_list: list, high_idx: int, low_idx: int) -> None:
+        """Uses Quick Sort Approach to sort the list of elements.
+
+        Args:
+            input_list (list): Input List
+            high_idx (int): Max Index
+            low_idx (int): Min Index
+        """
+
+        if low_idx < high_idx:
+            partition_idx = Sorting_Algorithms.get_partition_index(
+                input_list=input_list, low_idx=low_idx, high_idx=high_idx)
+
+            Sorting_Algorithms.quick_sort(
+                input_list=input_list, low_idx=low_idx, high_idx=partition_idx - 1)
+            Sorting_Algorithms.quick_sort(
+                input_list=input_list, low_idx=partition_idx + 1, high_idx=high_idx)
 
 
 if __name__ == '__main__':
@@ -104,7 +153,10 @@ if __name__ == '__main__':
 
     # Sorting_Algorithms.insertion_sort(input_list=input_list)
 
-    Sorting_Algorithms.merge_sort(
-        input_list=input_list, left_idx=0, right_idx=len(input_list) - 1)
+    # Sorting_Algorithms.merge_sort(
+    #     input_list=input_list, left_idx=0, right_idx=len(input_list) - 1)
+
+    Sorting_Algorithms.quick_sort(
+        input_list=input_list, low_idx=0, high_idx=len(input_list) - 1)
 
     print(f'List of Elements after Sorting - {input_list}')

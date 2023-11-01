@@ -49,7 +49,7 @@ Time Complexity:
 
 Auxiliary Space: O(N).
 
-Python Code for Binary Search (Recursive Function):
+Python Code for Merge Sort (Recursive Function):
 
 def merge_lists(input_list: list, left_idx: int, right_idx: int, middle_idx: int) -> None:
     """Merges two lists based on their index into one sorted array.

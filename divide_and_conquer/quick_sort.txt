@@ -1,0 +1,111 @@
+QuickSort is a sorting algorithm based on the Divide and Conquer algorithm that picks an element as a pivot and
+partitions the given array around the picked pivot by placing the pivot in its correct position in the sorted array.
+
+The key process in quickSort is a partition(). The target of partitions is to place the pivot (any element can be
+chosen to be a pivot) at its correct position in the sorted array and put all smaller elements to the left of the pivot, and all greater elements to the right of the pivot.
+Partition is done recursively on each side of the pivot after the pivot is placed in its correct position and this
+finally sorts the array.
+
+Choice of Pivot:
+
+1. Always pick the first element as a pivot.
+2. Always pick the last element as a pivot (implemented below)
+3. Pick a random element as a pivot.
+4. Pick the middle as the pivot.
+
+Partition Algorithm:
+The logic is simple, we start from the leftmost element and keep track of the index of smaller (or equal)
+elements as i. While traversing, if we find a smaller element, we swap the current element with arr[i]. Otherwise, we ignore the current element.
+
+Pseudo Algorithm for Merge Sort:
+// low  --> Starting index,
+// high  --> Ending index
+quickSort(arr[], low, high) {
+
+  // Till starting index is lesser than ending index
+  if (low < high) {
+
+    // pi is partitioning index,
+    // arr[p] is now at right place
+    pi = partition(arr, low, high);
+
+    // Before pi
+    quickSort(arr, low, pi - 1);
+    // After pi
+    quickSort(arr, pi + 1, high);
+  }
+}
+
+Time Complexity:
+
+1. Best Case: Ω (N log (N))
+    The best-case scenario for quicksort occur when the pivot chosen at the each step divides the array into roughly equal halves.
+    In this case, the algorithm will make balanced partitions, leading to efficient Sorting.
+2. Average Case: θ ( N log (N))
+    Quicksort’s average-case performance is usually very good in practice, making it one of the fastest sorting Algorithm.
+3. Worst Case: O(N2)
+    The worst-case Scenario for Quicksort occur when the pivot at each step consistently results in highly unbalanced partitions.
+    When the array is already sorted and the pivot is always chosen as the smallest or largest element. To mitigate the worst-case Scenario,
+    various techniques are used such as choosing a good pivot (e.g., median of three) and using Randomized algorithm (Randomized Quicksort )
+     to shuffle the element before sorting.
+4. Auxiliary Space: O(1), if we don’t consider the recursive stack space. If we consider the recursive stack space then, in the worst case quicksort could make O(N).
+
+
+Python Code for Ouick Sort Algorithm (Recursive Function): (Picking the last element as the Pivot)
+
+def get_partition_index(input_list: list, low_idx: int, high_idx: int) -> int:
+    """Gets the partition of the given list taking the last element as the pivot.
+
+    Args:
+        input_list (list): Input List
+        low_idx (int): Lower Index
+        high_idx (int): Higher Index
+
+    Returns:
+        int: Partition Index
+    """
+
+    pivot_element = input_list[high_idx]
+
+    i = low_idx - 1
+
+    for j in range(low_idx, high_idx):
+        if input_list[j] <= pivot_element:
+            i = i + 1
+            (input_list[i], input_list[j]) = (input_list[j], input_list[i])
+
+    (input_list[i + 1], input_list[high_idx]
+        ) = (input_list[high_idx], input_list[i + 1])
+
+    return i + 1
+
+def quick_sort(input_list: list, high_idx: int, low_idx: int) -> None:
+    """Uses Quick Sort Approach to sort the list of elements.
+
+    Args:
+        input_list (list): Input List
+        high_idx (int): Max Index
+        low_idx (int): Min Index
+    """
+
+    if low_idx < high_idx:
+        partition_idx = Sorting_Algorithms.get_partition_index(
+            input_list=input_list, low_idx=low_idx, high_idx=high_idx)
+
+        Sorting_Algorithms.quick_sort(
+            input_list=input_list, low_idx=low_idx, high_idx=partition_idx - 1)
+        Sorting_Algorithms.quick_sort(
+            input_list=input_list, low_idx=partition_idx + 1, high_idx=high_idx)
+
+
+Advantages of Quick Sort:
+1. It is a divide-and-conquer algorithm that makes it easier to solve problems.
+1. It is efficient on large data sets.
+1. It has a low overhead, as it only requires a small amount of memory to function.
+
+Disadvantages of Quick Sort:
+1. It has a worst-case time complexity of O(N2), which occurs when the pivot is chosen poorly.
+1. It is not a good choice for small data sets.
+1. It is not a stable sort, meaning that if two elements have the same key, their relative order will not be
+    preserved in the sorted output in case of quick sort, because here we are swapping elements according to
+    the pivot’s position (without considering their original positions).
