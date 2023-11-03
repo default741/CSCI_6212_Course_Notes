@@ -34,22 +34,22 @@ def maximum_value_limited_neighbors(input_list: Iterable[int], k: int = 1) -> in
     MVLN[0][0] = input_list[0]
     MVLN[0][1] = max(input_list[1], MVLN[0][0])
     
-    # for backtracking the array for base case solution
-    prev = [0]*len(arr)
-    curr = [0]*len(arr)
+    # for backtracking the input_listay for base case solution
+    prev = [0]*len(input_list)
+    curr = [0]*len(input_list)
     
     
-    # b_track array for all values for one k and for each position 
+    # b_track input_listay for all values for one k and for each position 
     b_track = []
 
     # base case for k = 0 and first two elements which is maximum
-    base_0_1 = [arr[1], MVLN[0][0]]
+    base_0_1 = [input_list[1], MVLN[0][0]]
     MVLN[0][1] = max(base_0_1)
 
     # max index
     ind = base_0_1.index(max(base_0_1))
 
-    # updating the prev and curr prev is for b array for n-1 elements and curr is including n elements
+    # updating the prev and curr prev is for b input_listay for n-1 elements and curr is including n elements
     if(ind == 0):
         prev[0] = 1
         curr[1] = 1
@@ -58,7 +58,7 @@ def maximum_value_limited_neighbors(input_list: Iterable[int], k: int = 1) -> in
         curr[0] = 1
     
     # appending to b_track to use it for next k 
-    b_track.append([0]*len(arr))
+    b_track.append([0]*len(input_list))
 
     b_track[0][0] = 1
     b_track.append(curr)
@@ -82,11 +82,11 @@ def maximum_value_limited_neighbors(input_list: Iterable[int], k: int = 1) -> in
         else:
             prev,curr = curr, prev
             curr[i] = 1
-        # appending for each input i the b array
+        # appending for each input i the b input_listay
         b_track.append(curr)
 
-    # b array 
-    b = np.zeros((k+1,len(arr)))
+    # b input_listay 
+    b = np.zeros((k+1,len(input_list)))
     
 
     # For k >= 1
@@ -103,7 +103,7 @@ def maximum_value_limited_neighbors(input_list: Iterable[int], k: int = 1) -> in
         # initializing the b_track_prev which is the b_track values for k-1 and we need that in updating the values of k
         b_track_prev = b_track.copy()
         b_track = []
-        b_track.append([0]*len(arr))
+        b_track.append([0]*len(input_list))
 
         # for k>=1 the values we can always include first two value to get the maximum if numbers are positive
         b_track[0][0:2] = [1,1]
@@ -117,7 +117,7 @@ def maximum_value_limited_neighbors(input_list: Iterable[int], k: int = 1) -> in
             
             MVLN[j][i] = max(chk)
 
-            # the b array will be same as the 
+            # the b input_listay will be same as the 
             ind = get_highest_max_ind(chk)
             if(ind ==0):
 
