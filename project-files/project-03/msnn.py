@@ -10,8 +10,15 @@ from tqdm import tqdm
 
 np.random.seed(42)
 
+# return the highest idx on maximum
+def get_highest_max_ind(lis):
+    m = max(lis)
+    ind = [i for i in range(len(lis)) if lis[i]==m]
+    return ind[-1]
+
 
 def maximum_value_limited_neighbors(input_list: Iterable[int], k: int = 1) -> int:
+
     """Given a List of numbers, Finds the maximum value achievable with only k adjecent 1s.
 
     Args:
@@ -36,6 +43,39 @@ def maximum_value_limited_neighbors(input_list: Iterable[int], k: int = 1) -> in
 
     MVLN[0][1] = max(input_list[1], MVLN[0][0])
 
+    # for backtracking the input_listay for base case solution
+    prev = [0]*len(input_list)
+    curr = [0]*len(input_list)
+
+
+    # b_track input_listay for all values for one k and for each position
+    b_track = []
+
+    # base case for k = 0 and first two elements which is maximum
+    base_0_1 = [input_list[1], MVLN[0][0]]
+    MVLN[0][1] = max(base_0_1)
+
+    # max index
+    ind = base_0_1.index(max(base_0_1))
+
+    # updating the prev and curr prev is for b input_listay for n-1 elements and curr is including n elements
+    if(ind == 0):
+        prev[0] = 1
+        curr[1] = 1
+    else:
+        prev[1] = 1
+        curr[0] = 1
+
+    # appending to b_track to use it for next k
+    b_track.append([0]*len(input_list))
+
+    b_track[0][0] = 1
+    b_track.append(curr)
+
+
+
+
+
     b = [0] * len(input_list)
 
     b[input_list.index(MVLN[0][1])] = 1
@@ -44,9 +84,25 @@ def maximum_value_limited_neighbors(input_list: Iterable[int], k: int = 1) -> in
 
     # Base Case for k = 0
     for i in range(2, len(input_list)):
-        b = [0] * len(input_list)
 
-        MVLN[0][i] = max(MVLN[0][i-1], MVLN[0][i-2] + input_list[i])
+        # checking whether max value for element i is same as i-1 excluding i or sum till i-2 inclucing i
+        chk = [MVLN[0][i-1], MVLN[0][i-2] + input_list[i]]
+        MVLN[0][i] = max(chk)
+
+        # index of the maximum of the two max values if two are having same numbers
+        ind = get_highest_max_ind(chk)
+
+        if(ind == 0):
+            prev = curr.copy()
+        else:
+            prev,curr = curr, prev
+            curr[i] = 1
+        # appending for each input i the b input_listay
+        b_track.append(curr)
+
+    # b input_listay
+    b = np.zeros((k+1,len(input_list)))
+
 
         if MVLN[0][i-1] > MVLN[0][i-2] + input_list[i]:
             b_list.append(b_list[-1])
@@ -60,8 +116,6 @@ def maximum_value_limited_neighbors(input_list: Iterable[int], k: int = 1) -> in
 
     # For k >= 1
     for j in range(k):
-        b_list = []
-        b = [0] * len(input_list)
 
         MVLN[j + 1][0] = input_list[0]
 
@@ -69,47 +123,49 @@ def maximum_value_limited_neighbors(input_list: Iterable[int], k: int = 1) -> in
         b_list.append(b)
 
         MVLN[j + 1][1] = input_list[1] + input_list[0]
+        b[j+1][0:2]    = [1,1]
 
-        b = [0] * len(input_list)
-
-        b[0] = 1
-        b[1] = 1
-
-        b_list.append(b)
-        b_dict[j + 1] = b_list
+    b[0] = curr
 
     for j in range(1, k + 1):
-        b_list = []
+
+        # initializing the b_track_prev which is the b_track values for k-1 and we need that in updating the values of k
+        b_track_prev = b_track.copy()
+        b_track = []
+        b_track.append([0]*len(input_list))
+
+        # for k>=1 the values we can always include first two value to get the maximum if numbers are positive
+        b_track[0][0:2] = [1,1]
+
 
         for i in range(2, len(input_list)):
-            MVLN[j][i] = max(MVLN[j][i - 1], MVLN[j - 1][i - 1] +
-                             input_list[i], MVLN[j][i - 2] + input_list[i])
 
-            if MVLN[j][i - 1] > MVLN[j - 1][i - 1] + input_list[i] and MVLN[j][i - 1] > MVLN[j][i - 2] + input_list[i]:
-                b_list.append(b_dict[j][i - 1].copy())
+            # three conditions
+            chk = [MVLN[j][i - 1], MVLN[j - 1][i - 1] +
+                             input_list[i], MVLN[j][i - 2] + input_list[i]]
 
-            elif MVLN[j - 1][i - 1] + input_list[i] > MVLN[j][i - 1] and MVLN[j - 1][i - 1] + input_list[i] > MVLN[j][i - 2] + input_list[i]:
-                b = b_dict[j - 1][i - 1].copy()
-                b[i] = 1
-                b_list.append(b)
+            MVLN[j][i] = max(chk)
+
+            # the b input_listay will be same as the
+            ind = get_highest_max_ind(chk)
+            if(ind ==0):
+
+                b[j][:i] = b[j][:i]
+                b[j][i]  = 0
+
+            elif(ind ==1):
+
+                b[j][:i] = b_track_prev[i-1][:i]
+                b[j][i]  = 1
 
             else:
-                b = b_dict[j][i - 2].copy()
-                b[i] = 1
-                b_list.append(b)
 
-            b_dict[j].extend(b_list)
+                b[j][:i-1] = b[j][:i-1]
+                b[j][i-1]  = 0
+                b[j][i]    = 1
+            b_track.append(b[j])
 
-    print(b_dict[k])
-
-    final_b = b_dict[k][-(k+1)]
-    some_b_list = b_dict[k][-(k):]
-    for i in range(k):
-        final_b = np.logical_or(final_b, some_b_list[i])
-
-    print(final_b)
-
-    return MVLN[-1][-1]
+    return MVLN[-1][-1], b_track[-1]
 
 
 if __name__ == '__main__':
